@@ -28,7 +28,7 @@ services:
     depends_on:
       - mongo
   inventory-service:
-    restart: always
+    restart: on-failure
     build: ./inventory-service
     container_name: inventory-service
     environment:
@@ -42,16 +42,13 @@ services:
     depends_on:
       - mongo
   auditor-service:
-    restart: always
+    restart: on-failure
     build: ./auditor-service
     container_name: auditor-service
     environment:
       - PORT=6775
       - DB_CONNECTION_STRING=mongodb://ecommerce:admin1234@mongo:27017/auditor-db
       - WAIT_HOSTS=mongo:27017
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
     expose:
       - "6775"
     ports:
@@ -59,7 +56,7 @@ services:
     depends_on:
       - mongo
   gateway-service:
-    restart: always
+    restart: on-failure
     build: ./gateway-service
     container_name: gateway
     environment:
@@ -67,7 +64,7 @@ services:
       - INVENTORY_SERVICE=http://inventory-service:6778
       - PRODUCT_SERVICE=http://product-service:6777
       - AUDITOR_SERVICE=http://auditor-service:6775
-      - WAIT_HOSTS=http://inventory-service:6778,http://product-service:6777,http://auditor-service:6775,mongo:27017
+      - WAIT_HOSTS=inventory-service:6778,product-service:6777
     expose:
       - "6776"
     ports:

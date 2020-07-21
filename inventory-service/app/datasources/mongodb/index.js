@@ -5,13 +5,13 @@ require('./models');
 const controllers = require('./controllers');
 
 if (process.env.NODE_ENV !== 'test') {
-  const connectWithRetry = () => mongoose.connect(config.database, config.mongoOptions, (err) => {
+  mongoose.connect(config.database, config.mongoOptions, (err) => {
     if (err) {
-      logger.info('Failed to connect to mongo on startup - retrying in 5 sec', err);
-      setTimeout(connectWithRetry, 5000);
+      logger.info(`connection to database ${config.database} failed ${err}`);
+    } else {
+      logger.info('hello from mongodb');
     }
   });
-  connectWithRetry();
 }
 
 module.exports = {
