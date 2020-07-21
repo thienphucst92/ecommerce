@@ -1,0 +1,3 @@
+type Query {
+  products(filter: ProductFilter, limit: Int): [Product]!
+}

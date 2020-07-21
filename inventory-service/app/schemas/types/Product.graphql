@@ -1,0 +1,4 @@
+extend type Product @key(fields: "sku") {
+  sku: String @external
+  inventoryCount: Int
+}

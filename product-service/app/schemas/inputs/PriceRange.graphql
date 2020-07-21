@@ -1,0 +1,4 @@
+input PriceRange {
+  from: Float!
+  to: Float!
+}

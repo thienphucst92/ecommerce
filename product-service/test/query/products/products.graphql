@@ -1,0 +1,10 @@
+query products($filter: ProductFilter, $limit: Int) {
+  products(filter: $filter, limit: $limit) {
+    id
+    sku
+    name
+    price
+    branch
+    colour
+  }
+}

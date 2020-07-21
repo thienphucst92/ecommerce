@@ -1,0 +1,78 @@
+version: '3'
+services:
+  mongo:
+    restart: always
+    image: 'mongo'
+    command: [--auth]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: root-db
+    volumes:
+      - ./init-mongo-db.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./home/mongodb:/data/mongo
+    ports:
+      - '27017:27017'
+  product-service:
+    restart: on-failure
+    build: ./product-service
+    container_name: product-service
+    environment:
+      - PORT=6777
+      - DB_CONNECTION_STRING=mongodb://ecommerce:admin1234@mongo:27017/product-db
+      - WAIT_HOSTS=mongo:27017
+    expose:
+      - "6777"
+    ports:
+      - "6777:6777"
+    depends_on:
+      - mongo
+  inventory-service:
+    restart: always
+    build: ./inventory-service
+    container_name: inventory-service
+    environment:
+      - PORT=6778
+      - DB_CONNECTION_STRING=mongodb://ecommerce:admin1234@mongo:27017/inventory-db
+      - WAIT_HOSTS=mongo:27017
+    expose:
+      - "6778"
+    ports:
+      - "6778:6778"
+    depends_on:
+      - mongo
+  auditor-service:
+    restart: always
+    build: ./auditor-service
+    container_name: auditor-service
+    environment:
+      - PORT=6775
+      - DB_CONNECTION_STRING=mongodb://ecommerce:admin1234@mongo:27017/auditor-db
+      - WAIT_HOSTS=mongo:27017
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+    expose:
+      - "6775"
+    ports:
+      - "6775:6775"
+    depends_on:
+      - mongo
+  gateway-service:
+    restart: always
+    build: ./gateway-service
+    container_name: gateway
+    environment:
+      - PORT=6776
+      - INVENTORY_SERVICE=http://inventory-service:6778
+      - PRODUCT_SERVICE=http://product-service:6777
+      - AUDITOR_SERVICE=http://auditor-service:6775
+      - WAIT_HOSTS=http://inventory-service:6778,http://product-service:6777,http://auditor-service:6775,mongo:27017
+    expose:
+      - "6776"
+    ports:
+      - "6776:6776"
+    depends_on:
+      - product-service
+      - inventory-service
+      - auditor-service

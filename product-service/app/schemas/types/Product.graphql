@@ -1,0 +1,8 @@
+type Product @key(fields: "sku") {
+  id: ID!
+  sku: String
+  name: String
+  price: Float
+  branch: String
+  colour: String
+}

@@ -1,0 +1,8 @@
+input ProductFilter {
+  sortBy: String
+  sortDirection: String
+  priceRange: PriceRange
+  branch: String
+  name: String
+  cursor: Float
+}
