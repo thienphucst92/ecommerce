@@ -2,6 +2,14 @@
 
 ## System Overview
 
+This project use the concepts of [GraphQL Federation Gateway](https://www.apollographql.com/docs/apollo-server/federation/introduction/) from Apollo, an Apollo Federation consists of:
+  - A collection of implementing services that each define a distinct GraphQL schema
+  - A gateway that composes the distinct schemas into a federated data graph and executes queries across the services in the graph
+
+Additionally, there's also an `auditor-service` that running as an REST APIs for receiving auditor request from the `gateway`
+
+See the image below: 
+
 ![System overview](./design/images/overview.png)
 
 | Component                  | Environments                                    |
@@ -10,6 +18,13 @@
 | Product Service            | Node.js 10.x, Apollo Federated Server           |
 | Inventory Service          | Node.js 10.x, Apollo Federated Server           |
 | Auditor Service            | Node.js 10.x, Express Server                    |
+
+
+## Project structure of a service
+
+- ./app/datasources: handle all fetching data operations, an GraphQL query can fetch data from multiple datasources
+- ./app/schemas: GraphQL schema
+- ./app/resolvers: GraphQL resolver for resolve data fields
 
 ## Client - Server communication
 
@@ -144,6 +159,10 @@ type Product {
 ```
 
 ## Run the project
+
+### Prerequisite
+
+- Docker
 
 Run the following command: `sh start.sh`
 Navigate to http://localhost:6776/graphql, you should see a GraphQL Playgournd like this:
