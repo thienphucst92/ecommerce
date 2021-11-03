@@ -27,7 +27,7 @@
     "mongoose-auto-increment": "^5.0.1",
     "ms": "^2.1.2",
     "require-graphql-file": "^1.0.1",
-    "validator": "^11.0.0",
+    "validator": "^13.7.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
